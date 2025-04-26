@@ -143,26 +143,3 @@ function TextShape:destroyWholeShit()
 	iprint(fontsID.tbl)
 	self = nil
 end
-
-local scr = Vector2(guiGetScreenSize())
-local zoom = scr.x < 2048 and math.min(2, 2048/scr.x) or 0.9;
-
-function dxDrawRoundedRectangle(x, y, width, height, radius, color, postGUI, subPixelPositioning)
-    dxDrawRectangle(x+radius, y+radius, width-(radius*2), height-(radius*2), color, postGUI, subPixelPositioning)
-    dxDrawCircle(x+radius, y+radius, radius, 180, 270, color, color, 16, 1, postGUI)
-    dxDrawCircle(x+radius, (y+height)-radius, radius, 90, 180, color, color, 16, 1, postGUI)
-    dxDrawCircle((x+width)-radius, (y+height)-radius, radius, 0, 90, color, color, 16, 1, postGUI)
-    dxDrawCircle((x+width)-radius, y+radius, radius, 270, 360, color, color, 16, 1, postGUI)
-    dxDrawRectangle(x, y+radius, radius, height-(radius*2), color, postGUI, subPixelPositioning)
-    dxDrawRectangle(x+radius, y+height-radius, width-(radius*2), radius, color, postGUI, subPixelPositioning)
-    dxDrawRectangle(x+width-radius, y+radius, radius, height-(radius*2), color, postGUI, subPixelPositioning)
-    dxDrawRectangle(x+radius, y, width-(radius*2), radius, color, postGUI, subPixelPositioning)
-end
-
-local fonts = {}
-fonts[1] = dxCreateFont(':c-dx-no/fonts/Poppins-Bold.ttf',100,false,'cleartype_natural')
-
-addEventHandler('onClientRender',root,function()
-	dxDrawCircle(262.39999145508/zoom,203.51999473572/zoom,64/zoom,0,360,-1,-1,32,1,false)
-	dxDrawText('Hello World',scr.x/2 - (50)/zoom,scr.y/2 - (25)/zoom,(scr.x/2 - (50)/zoom)+(100/zoom),(scr.y/2 - (25)/zoom)+(50/zoom),-4253929,0.6144/zoom,fonts[1],'center','center',false,false,false,false)
-end)
