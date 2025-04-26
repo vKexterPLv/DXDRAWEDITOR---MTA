@@ -1,0 +1,40 @@
+<meta>
+    <info author="Belzebub" name="EDYTOR GUI W DX" version="1.0" type="script"/>
+    <script src="server.lua" type="server"/>
+	
+    <script src="classlib.lua" type="client"/>
+    <script src="utils.lua" type="client"/>
+    <script src="client/cgui.lua" type="client"/>
+    <script src="client/colorpicker/colorpicker.lua" type="client"/>
+    <script src="client/elements/baseElement.lua" type="client"/>
+    <script src="client/elements/rectangle.lua" type="client"/>
+    <script src="client/elements/text.lua" type="client"/>
+    <script src="client/elements/image.lua" type="client"/>
+    <script src="client/elements/roundedRectangle.lua" type="client"/>
+    <script src="client/elements/circle.lua" type="client"/>
+    <script src="client/contextmenu.lua" type="client"/>
+    <script src="client/resizeanddrag.lua" type="client"/>
+    <script src="client/main.lua" type="client"/>
+    <script src="client/toolbar.lua" type="client"/>
+    <script src="client/image_picker.lua" type="client"/>
+    <script src="client/font_picker.lua" type="client"/>
+	
+	<file src="client/colorpicker/blank.png" />
+	<file src="client/colorpicker/cursor.png" />
+	<file src="client/colorpicker/h.png" />
+	<file src="client/colorpicker/sv.png" />
+	
+	<file src="images/arrow_out.png" />
+	<file src="images/cross.png" />
+	<file src="images/dot_white.png" />
+	<file src="images/plus.png" />
+	<file src="images/reset.png" />
+	
+	<file src="images/examples/mtalogo.png" />
+	
+	<file src="filesForSave/baseplate.txt" />
+	
+	<aclrequest>
+		<right name="general.ModifyOtherObjects" access="true" />
+	</aclrequest>
+</meta>
