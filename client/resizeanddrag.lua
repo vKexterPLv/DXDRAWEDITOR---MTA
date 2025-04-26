@@ -30,10 +30,14 @@ function ResizeAndDragModule:renderResizeHandling()
 	if guied.resizeMode then
 		if isCursorShowing() and self.resizing.bool and #guied.elements >= 1 then
 			local v = guied.elements[self.resizing.id]
-			if v and v.type ~= "CIRCLE" then
-				local cx,cy = getCursorPosition()
-				cx,cy = cx*scr.x,cy*scr.y
-				
+			local cx,cy = getCursorPosition()
+			cx,cy = cx*scr.x,cy*scr.y
+			
+			if v then
+				v:repositionLine(self.resizing.corner,cx,cy)
+			end
+			
+			if v and v.type ~= "CIRCLE" and v.type ~= "LINE" then
 				
 				if self.resizing.corner == "top-center" then
 					local newH = v.h + (v.y - cy)
@@ -118,8 +122,13 @@ function ResizeAndDragModule:renderResizeHandling()
 			v.x = cx-self.dragX
 			v.y = cy-self.dragY
 			
+			
 			if v.type ~= "CIRCLE" then
 				v:setUpResizePoints()
+			end
+			if v.type == "LINE" then
+				v.x2 = v.x+v.w
+				v.y2 = v.y+v.h
 			end
 		end
 	end

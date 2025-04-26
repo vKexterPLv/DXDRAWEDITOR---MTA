@@ -28,6 +28,7 @@ function Toolbar:constructor()
 	self:addOption("IMAGE",Image)
 	self:addOption("ROUNDED RECT",RoundedRectangle)
 	self:addOption("CIRCLE",Circle)
+	self:addOption("LINE",Line)
 	
 	self.outputX = scaleX(1920)-self.toolbarSize
 	self.outputY = self.toolbarY
