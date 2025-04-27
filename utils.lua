@@ -77,7 +77,7 @@ function returnScaleXString(x,anchorX)
 		return "scr.x/2 - ("..((scr.x/2-x)*zoom)..")/zoom"
 	end
 	if anchorX == "right" then
-		return "scr.x - "..((scr.y-y)*zoom).."/zoom"
+		return "scr.x - "..((scr.x-x)*zoom).."/zoom"
 	end
 end
 
