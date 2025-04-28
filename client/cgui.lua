@@ -73,6 +73,10 @@ function CGUI:clearup()
 		destroyElement(self.openPicker) 
 	end
 	
+	if fontPicker.showing then
+		fontPicker:clearUp()
+	end
+	
 	if isElement(self.window) then destroyElement(self.window) end
 	
 	

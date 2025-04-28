@@ -192,6 +192,8 @@ end
 function ImagePicker.close()
 	guiSetVisible(ImagePicker.gui.wndMain, false)
 	ImagePicker.reloading = nil
+	
+	guied.customizing = false
 end
 
 
