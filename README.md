@@ -1,1 +1,7 @@
-# DXDRAWEDITOR---MTA
+# KEYBINDINGS
+
+| KEY  | WHAT ITS DOING |
+| ------------- | ------------- |
+| K  | RESIZE  |
+| ARROWS+SHIFT  | MOVING ELEMENT FASTER  |
+| ARROWS | MOVING ELEMENT |
