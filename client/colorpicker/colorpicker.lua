@@ -9,7 +9,7 @@ function openPicker(id, start, title)
   if id and not pickerTable[id] then
     pickerTable[id] = colorPicker.create(id, start, title)
     pickerTable[id]:updateColor()
-    return true
+    return pickerTable[id].colorPickerElement
   end
   return false
 end
@@ -66,6 +66,8 @@ function colorPicker.create(id, start, title)
   cp.handlers.pickColor = function() cp:pickColor() end
   cp.handlers.destroy = function() cp:pickColor() end
   cp.handlers.inputHEX = function() cp:inputHEX() end
+  
+  cp.colorPickerElement = createElement("gui-colorpicker")
 
   addEventHandler("onClientGUIMouseDown", cp.gui.svmap, cp.handlers.mouseDown, false)
   addEventHandler("onClientMouseLeave", cp.gui.svmap, cp.handlers.mouseSnap, false)
@@ -119,7 +121,7 @@ end
 function colorPicker:mouseUp(button, state)
   if not state or state ~= "down" then
     if self.gui.track then
-      triggerEvent("onColorPickerChange", root, self.id, self.color.hex, self.color.r, self.color.g, self.color.b)
+      triggerEvent("onColorPickerChange", self.colorPickerElement, self.id, self.color.hex, self.color.r, self.color.g, self.color.b)
     end
     self.gui.track = false
   end
@@ -173,7 +175,7 @@ function colorPicker:guiBlur()
 end
 
 function colorPicker:pickColor()
-  triggerEvent("onColorPickerOK", root, self.id, self.color.hex, self.color.r, self.color.g, self.color.b)
+  triggerEvent("onColorPickerOK", self.colorPickerElement, self.id, self.color.hex, self.color.r, self.color.g, self.color.b)
   self:destroy()
 end
 
@@ -191,6 +193,7 @@ function colorPicker:destroy()
   removeEventHandler("onClientGUIClick", self.gui.okb, self.handlers.pickColor)
   removeEventHandler("onClientGUIClick", self.gui.closeb, self.handlers.destroy)
   destroyElement(self.gui.window)
+  destroyElement(self.colorPickerElement)
   pickerTable[self.id] = nil
   setmetatable(self, nil)
   --showCursor(areThereAnyPickers())

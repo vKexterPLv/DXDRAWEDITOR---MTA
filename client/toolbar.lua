@@ -116,7 +116,7 @@ function Toolbar:onClick(btn,state)
 		table.insert(lines,"\r\n")
 
 		table.insert(lines,"addEventHandler('onClientRender',root,function()\r\n")
-		for k,v in pairs(guied.elements) do
+		for k,v in pairs(elementsID.tbl) do
 			table.insert(lines,"	"..v:output().."\r\n")
 		end
 		table.insert(lines,"end)")
@@ -126,10 +126,10 @@ function Toolbar:onClick(btn,state)
 	
 	for k,v in pairs(self.toolbarOptions) do
 		if isMouseInPosition(v.x,self.toolbarY,self.toolbarSize,self.toolbarSize) then
-			local id = #guied.elements + 1
 			local class = v.shapeClass:new()
+			local id = elementsID:assignID(class)
 			class.id = id
-			guied.elements[id] = class
+			elementsID.tbl[id].id = id
 			break
 		end
 	end

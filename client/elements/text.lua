@@ -20,12 +20,12 @@ function TextShape:constructor()
 	self.attributes = {
 		[1] = {name="Color",value=tocolor(255,255,255,255),action=function(self)
 			if menuKontekstowe.colorPickerCreated then return end
-			openPicker("Color","#ffffff","Color")
+			local element = openPicker("Color","#ffffff","Color")
 			guied.customizing = true
-			addEventHandler("onColorPickerChange",root,function(id, hex, r, g, b)
+			addEventHandler("onColorPickerChange",element,function(id, hex, r, g, b)
 				self.attributes[1].value = tocolor(r,g,b)
 			end)
-			addEventHandler("onColorPickerOK",root,function(id,hex,r,g,b)
+			addEventHandler("onColorPickerOK",element,function(id,hex,r,g,b)
 				self.attributes[1].value = tocolor(r,g,b)
 				menuKontekstowe.colorPickerCreated = false
 				guied.customizing = false
@@ -75,7 +75,7 @@ function TextShape:constructor()
 				self.attributes[6].value = value
 				if isElement(self.customFont.element) then fontsID:separateID(self.customFont.id); destroyElement(self.customFont.element) end
 			end
-			cgui:createCGUI(2,setValue,{"default","default-bold","clear","arial","sans","pricedown","bankgothic","diploma","beckett","unifont"})
+			cgui:createCGUI(2,setValue,{"default","default-bold","clear","arial","sans","pricedown","bankgothic","diploma","beckett","unifont"},true)
 		end},
 		[7] = {name="Clip",value=false,action=function(self)
 			self.attributes[7].value = not self.attributes[7].value

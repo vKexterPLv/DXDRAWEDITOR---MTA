@@ -20,6 +20,8 @@ function ContextMenu:constructor()
 	
 	self.origColor = tocolor(36,36,36,255)
 	self.hoverColor = tocolor(100,100,100,255)
+	self.segmentW = scaleImage(200)
+	self.segmentH = scaleImage(50)
 	
 	self.colorPickerCreated = false
 
@@ -46,7 +48,7 @@ end
 
 function ContextMenu:scrollUP()
 	if not self.contextMenuRevealed then return end
-	if self.row < #self.contextMenuSegments-self.maxRows+1 then 
+	if self.row < #self.contextMenuElements-self.maxRows+1 then 
 		self.row=self.row + 1
 	end
 end
@@ -66,21 +68,16 @@ function ContextMenu:onClickContextSegment(btn,state,x,y)
 	
 	local k = 1
 	for i=self.row,self.row+(self.maxRows-1) do
-		local segmentV = self.contextMenuSegments[i]
+		local segmentV = self.contextMenuSegments[k]
 		if segmentV then
 			local w = segmentV.w
 			local h = segmentV.h
 			local x = segmentV.x
-			local y = self.y+((k-1)*h)
+			local y = segmentV.y
 			if isMouseInPosition(x,y,w,h) then
 				local element = self.contextMenuElements[i]
+				iprint(element)
 				clickedOnSegment = true
-				
-				if element.name == "USUN" then
-					clickedOnSegment = false
-					guied.elements[self.clickedOn.id] = nil
-					self.clickedOn:delete()
-				end
 				
 				if element.action then
 					element.action(self.clickedOn)
@@ -96,53 +93,102 @@ function ContextMenu:onClickContextSegment(btn,state,x,y)
 	self.contextMenuRevealed = clickedOnSegment
 end
 
+function ContextMenu:bundleSegments()
+	for i=1,self.maxRows do
+		local w = self.segmentW
+		local h = self.segmentH
+		local x = self.x
+		local y = self.y+((i-1)*h)
+		self.contextMenuSegments[i] = {x=x,y=y,w=w,h=h,color=self.origColor}
+	end
+end
+
+function ContextMenu:addSegment(name,value,callback)
+	self.contextMenuElements[#self.contextMenuElements + 1] = {name=name,value=value,action=callback or false}
+end
+
 function ContextMenu:onClick(btn,state,x,y)
 	if state ~= "down" then return end
 	if btn ~= "right" then return end
 	
-	self.clickedOn = false
 	self.contextMenuRevealed = false
 	self.x,self.y = 0,0
 	
 	self.contextMenuElements = {}
 	self.contextMenuSegments = {}
 	
-	for _,v in reverse_pairs(guied.elements) do
+	self.row = 1
+	
+	for key,v in reverse_pairs(elementsID.tbl) do
 		self.contextMenuRevealed = false
-		local isMouseIn = v.type == "CIRCLE" and isMouseInCircle(v.x,v.y,v.attributes[3].value) or isMouseInPosition(v.x,v.y,v.w,v.h)
+		local isMouseIn = v.type == "CIRCLE" and isMouseInCircle(v.x,v.y,v.attributes[3].value) or ( v.type == "LINE" and isMouseInPosition(v.catchAreaX,v.catchAreaY,v.w,v.h) or isMouseInPosition(v.x,v.y,v.w,v.h))	
 		if isMouseIn then
 			self.clickedOn = v
 			self.x,self.y = x,y
-			self.contextMenuElements[1] = {name="OPCJE DLA: "..v.type,value=0}
+			self:addSegment("OPTIONS AVAIBLE: "..v.type,0)
 			
-			local i = 2
 			for k,v1 in pairs(v.attributes) do
-				self.contextMenuElements[i] = v1
-				self.contextMenuElements[i].originalAttributeIndex = k
-				i = i + 1
+				self:addSegment(v1.name,v1.value,v1.action or false)
 			end
 			
-			self.contextMenuElements[i] = {name="Wysrodkuj w osi X",value=0,action=function(self)
+			self:addSegment("Center X",0,function(self)
 				self.x = scr.x/2-self.w/2
 				if self.type ~= "CIRCLE" then
 					self:setUpResizePoints()
 				end
-			end}
-			self.contextMenuElements[i+1] = {name="Wysrodkuj w osi Y",value=0,action=function(self)
+			end)
+			
+			self:addSegment("Center Y",0,function(self)
 				self.y = scr.y/2-self.h/2
 				if self.type ~= "CIRCLE" then
 					self:setUpResizePoints()
 				end
-			end}
-			self.contextMenuElements[i+2] = {name="USUN",value=0}
+			end)
 			
-			local i = 1
-			for _,v1 in pairs(self.contextMenuElements) do
-				local w = scaleImage(200)
-				local h = scaleImage(50)
-				local x = self.x
-				self.contextMenuSegments[i] = {x=x,w=w,h=h,color=self.origColor}
-				i = i + 1
+			self:addSegment("Snap to left",0,function(self)
+				self.x = 0
+				if self.type ~= "CIRCLE" then
+					self:setUpResizePoints()
+				end
+			end)
+	
+			self:addSegment("Snap to right",0,function(self)
+				self.x = scr.x-self.w
+				if self.type ~= "CIRCLE" then
+					self:setUpResizePoints()
+				end
+			end)
+			
+			self:addSegment("Snap to top",0,function(self)
+				self.y = 0
+				if self.type ~= "CIRCLE" then
+					self:setUpResizePoints()
+				end
+			end)
+			
+			self:addSegment("Snap to bottom",0,function(self)
+				self.y = scr.y-self.h
+				if self.type ~= "CIRCLE" then
+					self:setUpResizePoints()
+				end
+			end)
+			
+			self:addSegment("DELETE",0,function(self)
+				elementsID:separateID(self.id)
+				self:delete()
+			end)
+			
+			local totalHeight = 0
+			for i=1,self.maxRows do
+				local y = self.y+((i-1)*self.segmentH)
+				totalHeight = totalHeight + self.segmentH
+			end
+			
+			self:bundleSegments()
+			
+			if self.y+totalHeight > scr.y then
+				self.y = scr.y-totalHeight
+				self:bundleSegments()
 			end
 			
 			self.contextMenuRevealed = true
@@ -156,18 +202,17 @@ function ContextMenu:render()
 	
 	local k = 1
 	for i=self.row,self.row+(self.maxRows-1) do
-		local segmentV = self.contextMenuSegments[i]
+		local segmentV = self.contextMenuSegments[k]
 		if segmentV then
 			local w = segmentV.w
 			local h = segmentV.h
 			local x = segmentV.x
-			local y = self.y+((k-1)*h)
+			local y = segmentV.y
 			local v = self.contextMenuElements[i]
-			
 			dxDrawRectangle(x,y,w,h,segmentV.color,true)
 			
 			if type(v.value) == "boolean" then
-				dxDrawText(v.name..": "..(v.value and "TAK" or "NIE"),x+scaleImage(10),y,x+w,y+h,white,1,"default-bold","left","center",false,false,true)
+				dxDrawText(v.name..": "..(v.value and "YES" or "NO"),x+scaleImage(10),y,x+w,y+h,white,1,"default-bold","left","center",false,false,true)
 			else
 				dxDrawText(v.name,x+scaleImage(10),y,x+w,y+h,white,1,"default-bold","left","center",false,false,true)
 			end
@@ -180,20 +225,20 @@ function ContextMenu:render()
 			k = k + 1
 		end
 	end
-	-- for k,v1 in pairs(self.contextMenuSegments) do
-	-- end
 end
 
 function ContextMenu:onHover()
+	if not self.contextMenuRevealed then return end
 	local k = 1
 	for i=self.row,self.row+(self.maxRows-1) do
-		local segmentV = self.contextMenuSegments[i]
+		local segmentV = self.contextMenuSegments[k]
 		if segmentV then
 			segmentV.color = self.origColor
 			local w = segmentV.w
 			local h = segmentV.h
 			local x = segmentV.x
-			local y = self.y+((k-1)*h)
+			local y = segmentV.y
+			
 			if isMouseInPosition(x,y,w,h) then
 				segmentV.color = self.hoverColor
 			end

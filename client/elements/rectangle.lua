@@ -16,12 +16,13 @@ function Rectangle:constructor()
 	self.attributes = {
 		[1] = {name="Color",value=tocolor(255,255,255,255),action=function(self)
 			if menuKontekstowe.colorPickerCreated then return end
-			openPicker("Color","#ffffff","Color")
+			local element = openPicker("Color","#ffffff","Color")
 			guied.customizing = true
-			addEventHandler("onColorPickerChange",root,function(id, hex, r, g, b)
+			addEventHandler("onColorPickerChange",element,function(id, hex, r, g, b)
+				iprint(self.id)
 				self.attributes[1].value = tocolor(r,g,b)
 			end)
-			addEventHandler("onColorPickerOK",root,function(id,hex,r,g,b)
+			addEventHandler("onColorPickerOK",element,function(id,hex,r,g,b)
 				self.attributes[1].value = tocolor(r,g,b)
 				menuKontekstowe.colorPickerCreated = false
 				guied.customizing = false

@@ -20,6 +20,8 @@ function GUIEditor:constructor()
 	self.resizeMode = false
 	self.customizing = false
 	
+	self.selected = false
+	
 	addEventHandler("onClientRender",root,self.func.draw)
 	addEventHandler("onClientKey",root,self.func.onKey)
 	
@@ -35,7 +37,24 @@ function GUIEditor:onKey(btn,state)
 end
 
 function GUIEditor:draw()
-	for k,v in pairs(self.elements) do
+
+	if guiSelector.selected then
+		local element = guiSelector.selected
+		local offset = scaleImage(5)
+		
+		if element.type ~= "CIRCLE" then
+			local x = element.type == "LINE" and element.catchAreaX or element.x
+			local y = element.type == "LINE" and element.catchAreaY or element.y
+			dxDrawRectangle(x-offset,y-offset,element.w+(offset*2),element.h+(offset*2),tocolor(0,100,0,200))
+		else
+			local radius = element.attributes[3].value
+			local size = radius*2
+			dxDrawRectangle(element.x-radius,element.y-radius,size,size,tocolor(0,100,0,200))
+		end
+	end
+	
+	-- Rysowanie elementow
+	for k,v in pairs(elementsID.tbl) do
 		v:draw()
 		
 		if self.resizeMode and v.type ~= "CIRCLE" then
@@ -93,5 +112,6 @@ function IDSystem:getID(index)
     end
 end
 
-guied = GUIEditor:new()
 fontsID = IDSystem:new()
+elementsID = IDSystem:new()
+guied = GUIEditor:new()

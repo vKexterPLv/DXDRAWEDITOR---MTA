@@ -94,12 +94,31 @@ function returnScaleYString(y,anchorY)
 	end
 end
 
+-- function reverse_pairs(t)
+	-- local i = #t + 1
+	-- return function()
+		-- i = i - 1
+		-- if i > 0 then
+			-- local v = t[i]
+			-- if v then
+				-- return i, v
+			-- end
+		-- end
+	-- end
+-- end
+
 function reverse_pairs(t)
-	local i = #t + 1
+	local keys = {}
+	for k,v in pairs(t) do
+		table.insert(keys,k)
+	end
+	table.sort(keys, function(a,b) return a > b end)
+	local i = 0
 	return function()
-		i = i - 1
-		if i >= 1 then
-			return i, t[i]
+		i = i + 1
+		local key = keys[i]
+		if key then
+			return key, t[key]
 		end
 	end
 end

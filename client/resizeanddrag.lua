@@ -28,12 +28,12 @@ end
 
 function ResizeAndDragModule:renderResizeHandling()
 	if guied.resizeMode then
-		if isCursorShowing() and self.resizing.bool and #guied.elements >= 1 then
-			local v = guied.elements[self.resizing.id]
+		if isCursorShowing() and self.resizing.bool and #elementsID.tbl >= 1 then
+			local v = elementsID.tbl[self.resizing.id]
 			local cx,cy = getCursorPosition()
 			cx,cy = cx*scr.x,cy*scr.y
 			
-			if v then
+			if v and v.type == "LINE" then
 				v:repositionLine(self.resizing.corner,cx,cy)
 			end
 			
@@ -114,21 +114,32 @@ function ResizeAndDragModule:renderResizeHandling()
 		end
 	end
 
-	if isCursorShowing() and self.moving.bool and #guied.elements >= 1 then
-		local v = guied.elements[self.moving.id]
+	if isCursorShowing() and self.moving.bool and #elementsID.tbl >= 1 then
+		local v = elementsID.tbl[self.moving.id]
 		if v then
 			local cx,cy = getCursorPosition()
 			cx,cy = cx*scr.x,cy*scr.y
-			v.x = cx-self.dragX
-			v.y = cy-self.dragY
-			
+			if v.type == "LINE" then
+				v.catchAreaX = cx-self.dragX
+				v.catchAreaY = cy-self.dragY
+			else
+				v.x = cx-self.dragX
+				v.y = cy-self.dragY
+			end
 			
 			if v.type ~= "CIRCLE" then
 				v:setUpResizePoints()
 			end
 			if v.type == "LINE" then
-				v.x2 = v.x+v.w
-				v.y2 = v.y+v.h
+				local width = v.x2-v.x
+				local height = v.y2-v.y
+				local isHeightNegative = height < 0
+				local isWidthNegative = width < 0
+				
+				v.x = isWidthNegative and v.catchAreaX+v.w or v.catchAreaX
+				v.y = isHeightNegative and v.catchAreaY+v.h or v.catchAreaY
+				v.x2 = isWidthNegative and v.x-v.w or v.x+v.w
+				v.y2 = isHeightNegative and v.y-v.h or v.y+v.h
 			end
 		end
 	end
@@ -138,7 +149,7 @@ function ResizeAndDragModule:onClick(btn,state,x,y)
 	if guied.customizing then return end
 	if btn ~= "left" then return end
 	if state == "down" then 
-		for _,v in reverse_pairs(guied.elements) do
+		for _,v in reverse_pairs(elementsID.tbl) do
 			if v then
 				if v.type ~= "CIRCLE" and guied.resizeMode then
 					for _,v1 in pairs(v.resizePoints) do
@@ -150,10 +161,10 @@ function ResizeAndDragModule:onClick(btn,state,x,y)
 						end
 					end
 				else
-					local isMouseIn = v.type == "CIRCLE" and isMouseInCircle(v.x,v.y,v.attributes[3].value) or isMouseInPosition(v.x,v.y,v.w,v.h)
+					local isMouseIn = v.type == "CIRCLE" and isMouseInCircle(v.x,v.y,v.attributes[3].value) or ( v.type == "LINE" and isMouseInPosition(v.catchAreaX,v.catchAreaY,v.w,v.h) or isMouseInPosition(v.x,v.y,v.w,v.h))	
 					if isMouseIn then
-						self.dragX = x-v.x
-						self.dragY = y-v.y
+						self.dragX = v.type == "LINE" and x-v.catchAreaX or x-v.x
+						self.dragY = v.type == "LINE" and y-v.catchAreaY or y-v.y
 						self.moving.id = v.id
 						self.moving.bool = true
 						break

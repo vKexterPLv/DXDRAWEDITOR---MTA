@@ -120,14 +120,17 @@ function CGUI:initializeWindow(chooser,...)
 		local comboW = 1
 		local comboH = 0.5
 		self.chooser = guiCreateComboBox(0,0.1,comboW,comboH,"Choose option",true,self.window)
-		self.openPicker = guiCreateButton(0,0.45,1,0.2,"Open font picker",true,self.window)
 		
 		for k,v in pairs(arg[1]) do
 			guiComboBoxAddItem(self.chooser,v)
 		end
 		
+		if doWeNeedFontPicker then
+			self.openPicker = guiCreateButton(0,0.45,1,0.2,"Open font picker",true,self.window)
+			addEventHandler("onClientGUIClick", self.openPicker, self.func.openPicker)
+		end
+		
 		self.cguiWith = "combobox"
-		addEventHandler("onClientGUIClick", self.openPicker, self.func.openPicker)
 	end
 	
 	guiFocus(self.window)

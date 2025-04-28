@@ -13,6 +13,7 @@
     <script src="client/elements/roundedRectangle.lua" type="client"/>
     <script src="client/elements/circle.lua" type="client"/>
     <script src="client/elements/line.lua" type="client"/>
+    <script src="client/selector.lua" type="client"/>
     <script src="client/contextmenu.lua" type="client"/>
     <script src="client/resizeanddrag.lua" type="client"/>
     <script src="client/main.lua" type="client"/>
