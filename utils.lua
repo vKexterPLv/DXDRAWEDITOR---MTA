@@ -35,6 +35,27 @@ function isMouseInPosition ( x, y, width, height )
 	return ( ( cx >= x and cx <= x + width ) and ( cy >= y and cy <= y + height ) )
 end
 
+function getDistanceBetweenMouseAndElement2D(element)
+	if ( not isCursorShowing( ) ) then
+		return false
+	end
+	local sx, sy = guiGetScreenSize ( )
+	local cx, cy = getCursorPosition ( )
+	local cx, cy = ( cx * sx ), ( cy * sy )
+	local centerX,centerY = element.x+element.w/2,element.y+element.h/2
+	
+	-- if isMouseInPosition(element.x,element.y,element.w,element.h) then 
+		-- cx,cy = cx+20,cy+20
+	-- else
+		-- cx,cy = cx+10,cy+10
+	-- end
+	
+	
+	local dx,dy = cx-centerX,cy-centerY
+	
+	return math.sqrt(dx*dx+dy*dy)
+end
+
 function getAnchorPoint(x,y,w,h)
 	local anchorX,anchorY
 

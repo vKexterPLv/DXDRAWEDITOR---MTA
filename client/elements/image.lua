@@ -13,6 +13,8 @@ function Image:constructor()
 	self.x = scr.x/2-self.w/2
 	self.y = scr.y/2-self.h/2
 	
+	self.rotation = 0
+	
 	self.attributes = {
 		[1] = {name="Color",value=tocolor(255,255,255,255),action=function(self)
 			if menuKontekstowe.colorPickerCreated then return end
@@ -44,9 +46,9 @@ function Image:constructor()
 		end},
 		[4] = {name="Rotation",value=0,action=function(self)
 			local function setValue(value)
-				self.attributes[4].value = 360*value/100
+				self.rotation = tonumber(value)
 			end
-			cgui:createCGUI(3,setValue)
+			cgui:createCGUI(1,setValue)
 		end},
 		[5] = {name="Rotation center X",value=0,action=function(self)
 			local function setValue(value)
@@ -80,13 +82,13 @@ function Image:setUpResizePoints()
 end
 
 function Image:drawShape()
-	dxDrawImage(self.x,self.y,self.w,self.h,self.attributes[3].value,self.attributes[4].value,self.attributes[5].value,self.attributes[6].value,self.attributes[1].value,self.attributes[2].value)
+	dxDrawImage(self.x,self.y,self.w,self.h,self.attributes[3].value,self.rotation,self.attributes[5].value,self.attributes[6].value,self.attributes[1].value,self.attributes[2].value)
 end
 
 function Image:output()
 	local anchorX,anchorY = getAnchorPoint(self.x,self.y,self.w,self.h)
 	local x, y = returnScaleXString(self.x,anchorX),returnScaleYString(self.y,anchorY)
-	return string.format("dxDrawImage(%s,%s,%d/zoom,%d/zoom,'%s',%d,%d,%d,%d,%s)",x,y,self.w*zoom,self.h*zoom,self.attributes[3].value,self.attributes[4].value,self.attributes[5].value,self.attributes[6].value,self.attributes[1].value,tostring(self.attributes[2].value))
+	return string.format("dxDrawImage(%s,%s,%d/zoom,%d/zoom,'%s',%d,%d,%d,%d,%s)",x,y,self.w*zoom,self.h*zoom,self.attributes[3].value,self.rotation,self.attributes[5].value,self.attributes[6].value,self.attributes[1].value,tostring(self.attributes[2].value))
 end
 
 function Image:destroyWholeShit()

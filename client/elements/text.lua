@@ -10,6 +10,8 @@ function TextShape:constructor()
 	self.w = self.defSizeW
 	self.h = self.defSizeH
 	
+	self.rotation = 0
+	
 	self.customFont = {element=false,path=false,id=0}
 	
 	-- iprint(self.w)
@@ -89,6 +91,12 @@ function TextShape:constructor()
 		[10] = {name="Color coded",value=false,action=function(self)
 			self.attributes[10].value = not self.attributes[10].value
 		end},
+		[11] = {name="Rotation",value=0,action=function(self)
+			local function setValue(value)
+				self.rotation = tonumber(value)
+			end
+			cgui:createCGUI(1,setValue)
+		end},
 	}
 
 	-- dx
@@ -111,14 +119,14 @@ function TextShape:setUpResizePoints()
 end
 
 function TextShape:drawShape()
-	dxDrawText(self.attributes[5].value,self.x,self.y,self.x+self.w,self.y+self.h,self.attributes[1].value,self.attributes[2].value,self.customFont.element or self.attributes[6].value,self.attributes[3].value,self.attributes[4].value,self.attributes[7].value,self.attributes[8].value,self.attributes[9].value,self.attributes[10].value)
+	dxDrawText(self.attributes[5].value,self.x,self.y,self.x+self.w,self.y+self.h,self.attributes[1].value,self.attributes[2].value,self.customFont.element or self.attributes[6].value,self.attributes[3].value,self.attributes[4].value,self.attributes[7].value,self.attributes[8].value,self.attributes[9].value,self.attributes[10].value,false,self.rotation)
 end
 
 function TextShape:output()
 	local anchorX,anchorY = getAnchorPoint(self.x,self.y,self.w,self.h)
 	local x, y = returnScaleXString(self.x,anchorX),returnScaleYString(self.y,anchorY)
 	local fontSize = tostring(self.attributes[2].value*zoom)
-	return string.format("dxDrawText('%s',%s,%s,(%s)+(%d/zoom),(%s)+(%d/zoom),%s,%s/zoom,%s,'%s','%s',%s,%s,%s,%s)",
+	return string.format("dxDrawText('%s',%s,%s,(%s)+(%d/zoom),(%s)+(%d/zoom),%s,%s/zoom,%s,'%s','%s',%s,%s,%s,%s,false,%d)",
 		self.attributes[5].value,
 		x,
 		y,
@@ -134,7 +142,8 @@ function TextShape:output()
 		tostring(self.attributes[7].value),
 		tostring(self.attributes[8].value),
 		tostring(self.attributes[9].value),
-		tostring(self.attributes[10].value)
+		tostring(self.attributes[10].value),
+		self.rotation
 	)
 end
 
