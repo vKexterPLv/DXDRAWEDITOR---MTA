@@ -27,7 +27,10 @@ Keybind `K` is for resizing using red points and `S` for resizing width and heig
 - [ ] Checkboxes
 - [ ] Scrollbar
 - [ ] Stylizing UI elements system
-- [ ] Import/export of project
 - [ ] Gridlist
 - [ ] Slider
 - [ ] Scrollable toolbar and centered
+- [ ] Layers menu
+- [ ] Open project menu
+- [ ] Save project
+- [ ] Move rendering order to top/down in context menu as opt
