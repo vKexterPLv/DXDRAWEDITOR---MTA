@@ -15,3 +15,16 @@ Keybind `K` is for resizing using red points and `S` for resizing width and heig
 
 - [ ] Creating scrollable text lists (EXAMPLE1,EXAMPLE2, etc.) vertically.
 - [ ] Snap to grid
+- [x] Circles
+- [x] Rectangles
+- [x] Lines
+- [x] Text
+- [x] Rounded rectangles
+- [x] Text
+- [x] Fixed context menu (Little refactor
+- [ ] Editboxes
+- [ ] Buttons
+- [ ] Checkboxes
+- [ ] Scrollbar
+- [ ] Stylizing UI elements system
+- [ ] Import/export of project
