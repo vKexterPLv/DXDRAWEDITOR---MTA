@@ -21,7 +21,7 @@ Keybind `K` is for resizing using red points and `S` for resizing width and heig
 - [x] Text
 - [x] Rounded rectangles
 - [x] Text
-- [x] Fixed context menu (Little refactor
+- [x] Context menu
 - [ ] Editboxes
 - [ ] Buttons
 - [ ] Checkboxes
