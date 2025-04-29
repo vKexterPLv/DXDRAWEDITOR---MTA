@@ -13,5 +13,5 @@ Keybind `K` is for resizing using red points and `S` for resizing width and heig
 
 # TODO
 
-[] Creating scrollable text lists (EXAMPLE1,EXAMPLE2, etc.) vertically.
-[] Snap to grid
+- [] Creating scrollable text lists (EXAMPLE1,EXAMPLE2, etc.) vertically.
+- [] Snap to grid
